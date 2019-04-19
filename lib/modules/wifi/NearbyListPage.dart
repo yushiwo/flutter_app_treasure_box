@@ -21,7 +21,6 @@ class RandomWordsState extends State<NearbyListPage> {
   //HTTP请求的函数返回值为异步控件Future
   Future<String> get(double lon, double lat, int range) async {
     var httpClient = new HttpClient();
-    // ignore: unnecessary_brace_in_string_interps
     var request = await httpClient.getUrl(Uri.parse('${_url}&lon=$lon&lat=$lat&r=$range&type=1&key=85e9b14aa37e5929e14d961f73a40367'));
     var response = await request.close();
     return await response.transform(utf8.decoder).join();
@@ -49,7 +48,13 @@ class RandomWordsState extends State<NearbyListPage> {
               case ConnectionState.waiting:     //get正在执行时
                 return new Center(
                   child: new Card(
-                    child: new Text('loading...'),    //在页面中央显示正在加载
+                    child: new SizedBox(
+                      width: 40.0,
+                      height: 40.0,
+                      child: new CircularProgressIndicator(
+                        backgroundColor: Colors.blue,
+                      ),
+                    ),    //在页面中央显示正在加载
                   ),
                 ) ;
               default:
@@ -65,31 +70,6 @@ class RandomWordsState extends State<NearbyListPage> {
         onRefresh: loadData,
       ),
     );
-
-//      new RefreshIndicator(
-//      child: new FutureBuilder(   //用于懒加载的FutureBuilder对象
-//        future: get(lon, lat, range),   //HTTP请求获取数据，将被AsyncSnapshot对象监视
-//        builder: (BuildContext context, AsyncSnapshot snapshot) {
-//          switch (snapshot.connectionState) {
-//            case ConnectionState.none:        //get未执行时
-//            case ConnectionState.waiting:     //get正在执行时
-//              return new Center(
-//                child: new Card(
-//                  child: new Text('loading...'),    //在页面中央显示正在加载
-//                ),
-//              ) ;
-//            default:
-//              if (snapshot.hasError)    //get执行完成但出现异常
-//                return new Text('Error: ${snapshot.error}');
-//              else  //get正常执行完成
-//                // 创建列表，列表数据来源于snapshot的返回值，而snapshot就是get(widget.newsType)执行完毕时的快照
-//                // get(widget.newsType)执行完毕时的快照即函数最后的返回值。
-//                return createListView(context, snapshot);
-//          }
-//        },
-//      ),
-//      onRefresh: loadData,
-//    );
   }
 
   Widget createListView(BuildContext context, AsyncSnapshot snapshot){
@@ -118,19 +98,25 @@ class RandomWordsState extends State<NearbyListPage> {
 
   Widget _newsRow(Wifi wifi) {
 
-    return new ListTile(
-      title: new Text(
-        wifi.name,
-        style: _biggerFont,
+    return new Card(
+      child: new Padding(
+        padding: new EdgeInsets.fromLTRB(8.0, 4.0, 8.0, 4.0),
+        child: new ListTile(
+          title: new Text(
+            wifi.name,
+            style: _biggerFont,
+          ),
+          trailing: new Text(
+            wifi.distance.toString(),
+            style: _biggerFont,
+          ),
+          onTap: (){  // 点击应该跳转详情页
+            showDetailPage(wifi);
+          },
+        ),
       ),
-      trailing: new Text(
-        wifi.distance.toString(),
-        style: _biggerFont,
-      ),
-      onTap: (){  // 点击应该跳转详情页
-        showDetailPage(wifi);
-      },
     );
+
   }
 
   void showDetailPage(Wifi wifi) {
