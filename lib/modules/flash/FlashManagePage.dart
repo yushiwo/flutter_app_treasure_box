@@ -23,21 +23,18 @@ class FlashState extends State<FlashManagePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _checkPermission();
   }
 
   @override
   void deactivate() {
-    Util.showToast("deactivate");
     turnOffFlash();
     super.deactivate();
   }
 
   @override
   void dispose() {
-    Util.showToast("dispose");
     turnOffFlash();
     super.dispose();
   }

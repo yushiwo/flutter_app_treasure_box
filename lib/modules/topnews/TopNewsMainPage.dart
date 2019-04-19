@@ -14,6 +14,7 @@ class TopNewsState extends State<TopNewsMainPage> with SingleTickerProviderState
     Tab(text: "头条",),
     Tab(text: "社会",),
     Tab(text: "国内",),
+    Tab(text: "国际",),
     Tab(text: "娱乐",),
     Tab(text: "体育",),
     Tab(text: "军事",),
@@ -54,7 +55,7 @@ class TopNewsState extends State<TopNewsMainPage> with SingleTickerProviderState
         controller: _tabController,
         children: myTabs.map((Tab tab) {
           return new Center(
-            child: new NewsListPage(),
+            child: new NewsListPage(tab.text),
           );
         }).toList(),
       ),
