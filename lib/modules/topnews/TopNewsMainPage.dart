@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_treasure_box/modules/topnews/NewsListPage.dart';
 
-class TopNewsListPage extends StatefulWidget {
+class TopNewsMainPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return new TopNewsState();
   }
 }
 
-class TopNewsState extends State<TopNewsListPage> with SingleTickerProviderStateMixin {
+class TopNewsState extends State<TopNewsMainPage> with SingleTickerProviderStateMixin {
   
   final List<Tab> myTabs = [
     Tab(text: "头条",),
@@ -53,7 +54,7 @@ class TopNewsState extends State<TopNewsListPage> with SingleTickerProviderState
         controller: _tabController,
         children: myTabs.map((Tab tab) {
           return new Center(
-            child: new Text(tab.text),
+            child: new NewsListPage(),
           );
         }).toList(),
       ),

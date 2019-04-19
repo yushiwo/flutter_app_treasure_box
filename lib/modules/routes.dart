@@ -3,7 +3,7 @@ import 'package:flutter_app_treasure_box/modules/flash/FlashManagePage.dart';
 import 'package:flutter_app_treasure_box/modules/history/HistoryListPage.dart';
 import 'package:flutter_app_treasure_box/modules/joke/JokeListPage.dart';
 import 'package:flutter_app_treasure_box/modules/phonearea/PhoneAreaPage.dart';
-import 'package:flutter_app_treasure_box/modules/topnews/TopNewsListPage.dart';
+import 'package:flutter_app_treasure_box/modules/topnews/TopNewsMainPage.dart';
 import 'package:flutter_app_treasure_box/modules/wifi/NearbyListPage.dart';
 
 
@@ -23,7 +23,7 @@ Map<String, WidgetBuilder> routes = <String, WidgetBuilder>{
   phoneRoute: (BuildContext context) =>
       new PhoneAreaPage(),
   topNewsRoute: (BuildContext context) =>
-      new TopNewsListPage(),
+      new TopNewsMainPage(),
   historyRoute: (BuildContext context) =>
       new HistoryListPage(),
   jokeRoute: (BuildContext context) =>
