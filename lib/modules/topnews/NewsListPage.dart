@@ -4,7 +4,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app_treasure_box/modules/global/model/topnews_model.dart';
 import 'package:flutter_app_treasure_box/modules/global/util/Util.dart';
+import 'package:flutter_app_treasure_box/modules/h5/H5Page.dart';
 
 class NewsListPage extends StatefulWidget {
   
@@ -97,17 +99,102 @@ class NewsState extends State<NewsListPage> {
             padding: const EdgeInsets.all(16.0),
             itemCount: values == null ? 0 : values.length,
             itemBuilder: (context, i) {
-              return _newsRow();
+              return _newsRow(context, new TopNews(values[i]["uniquekey"], values[i]["title"], values[i]["date"], values[i]["category"], values[i]["author_name"], values[i]["url"], values[i]["thumbnail_pic_s"], values[i]["thumbnail_pic_s02"], values[i]["thumbnail_pic_s03"]));
             }
         );
     }
   }
 
 
-  Widget _newsRow() {
-    return new Center(
-      child: Text("123"),
+  Widget _newsRow(BuildContext mContext, TopNews topNews) {
+    return new Card(
+      child: new InkWell(
+        onTap: () {
+          Navigator.of(mContext).push(new MaterialPageRoute(builder: (BuildContext context) => new H5Page(title: widget.typeKey,url: topNews.url)));
+        },
+        child: new Padding(
+          padding: new EdgeInsets.all(16.0),
+          child: new Column(
+            children: <Widget>[
+              // 标题
+              new Padding(
+                padding: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 12.0),
+                child: new Text(
+                  topNews.title,
+                  style: new TextStyle(fontSize: 16.0),
+                ),
+              ),
+
+              // 缩略图（3张）
+              new Row(
+                children: <Widget>[
+                  new Expanded(
+                    flex: 1,
+                    child: new Padding(
+                      padding: new EdgeInsets.all(4.0),
+                      child: _buildThumbnail(topNews.thumbnail_pic_s),
+                    )
+
+
+                  ),
+                  new Expanded(
+                    flex: 1,
+                      child: new Padding(
+                        padding: new EdgeInsets.all(4.0),
+                        child: _buildThumbnail(topNews.thumbnail_pic_s02),
+                      )
+                  ),
+                  new Expanded(
+                    flex: 1,
+                      child: new Padding(
+                        padding: new EdgeInsets.all(4.0),
+                        child: _buildThumbnail(topNews.thumbnail_pic_s03),
+                      )
+                  ),
+                ],
+              ),
+
+              // 作者 + 发布日期
+              new Padding(
+                padding: new EdgeInsets.fromLTRB(0.0, 6.0, 0.0, 0.0),
+                child: new Row(
+                  children: <Widget>[
+                    // 作者
+                    new Text(
+                      topNews.author_name,
+                      style: new TextStyle(fontSize: 12.0, color: Colors.grey),
+                    ),
+
+                    // 发布日期
+                    new Padding(
+                      padding: new EdgeInsets.fromLTRB(4.0, 0.0, 0.0, 0.0),
+                      child: new Text(
+                        topNews.date,
+                        style: new TextStyle(fontSize: 12.0, color: Colors.grey),
+                      ),
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
+        )
+      )
     );
+  }
+
+  Widget _buildThumbnail(String imageUrl) {
+    var content;
+    if (imageUrl != null && imageUrl?.isNotEmpty) {
+      //如果数据不为空，则显示Text
+      content = Image.network(imageUrl);
+    } else {
+      //当数据为空我们需要隐藏这个Text
+      //我们又不能返回一个null给当前的Widget Tree
+      //只能返回一个长宽为0的widget占位
+      content = new Container(height:0.0,width:0.0);
+    }
+    return content;
   }
 
   //HTTP请求的函数返回值为异步控件Future
