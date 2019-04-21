@@ -4,6 +4,7 @@ import 'package:flutter_app_treasure_box/modules/h5/H5Page.dart';
 import 'package:flutter_app_treasure_box/modules/home/MainPage.dart';
 import 'package:flutter_app_treasure_box/modules/myproject/MyProjectPage.dart';
 import 'package:flutter_app_treasure_box/modules/routes.dart';
+import 'package:flutter_app_treasure_box/modules/test/test.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -29,6 +30,15 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    Test.decodeShape();
+    Test.decodeArea();
+  }
 
   @override
   Widget build(BuildContext context) {
