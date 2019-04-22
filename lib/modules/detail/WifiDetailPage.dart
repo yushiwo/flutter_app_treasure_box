@@ -33,82 +33,105 @@ class _WifiDetailPageState extends State<WifiDetailPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text("Wifi详情"),
-        actions: <Widget>[
-          new IconButton(
-              icon: const Icon(Icons.favorite), onPressed: showToast),
-        ],
+        title: Text("Wi-Fi详情"),
+
       ),
       body: _refreshPage(widget.wifi),
     );
   }
 
   Widget _refreshPage(Wifi wifi) {
-    return new Container(
-      padding: const EdgeInsets.all(32.0),
-      child: new Row(
-        children: [
-          new Expanded(
-            child: new Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // 名字
-                new Container(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: new Text(
-                    wifi.name,
-                    style: new TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-
-                new Container(
-                  padding: const EdgeInsets.only(bottom: 24.0),
-                  child: new Text(
-                    wifi.address,
-                    style: new TextStyle(
-                      color: Colors.grey[500],
-                    ),
-                  ),
-                ),
-                // 导航和分享
-                new Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    buildButtonColumn(Icons.near_me, '导航(待完成...)'),
-                    buildButtonColumn(Icons.share, '分享(待完成...)'),
-                  ],
-                ),
-
-                new Container(
-                  padding: const EdgeInsets.only(top: 24.0),
-                ),
-                // 其它相关信息展示
-                new Column(
+    return new Card(
+      child: new Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Container(
+          padding: const EdgeInsets.all(16.0),
+          child: new Row(
+            children: [
+              new Expanded(
+                child: new Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    new Text(
-                      "其他信息",
-                      style: new TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
+                  children: [
+
+                    // wifi名称
+                    new Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        new Text(
+                          "Wi-Fi名称：",
+                          style: new TextStyle(
+                            fontSize: 12.0,
+                          ),
+                        ),
+                        new Text(
+                          wifi.name,
+                          style: new TextStyle(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold
+                          ),
+                        )
+                      ],
                     ),
-                    new Text(
-                      wifi.intro,
-                      style: new TextStyle(
-                        color: Colors.grey[500],
-                      ),
+
+                    new Container(
+                      padding: const EdgeInsets.only(top: 24.0),
+                    ),
+
+                    // wifi具体地址
+                    new Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        new Text(
+                          "Wi-Fi地点：",
+                          style: new TextStyle(
+                            fontSize: 12.0,
+                          ),
+                        ),
+                        new Text(
+                          wifi.address,
+                          style: new TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold
+                          ),
+                        )
+                      ],
+                    ),
+
+                    new Container(
+                      padding: const EdgeInsets.only(top: 24.0),
+                    ),
+
+                    // 其它相关信息展示
+                    new Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        new Text(
+                          "其他信息：",
+                          style: new TextStyle(
+                            fontSize: 12.0,
+                          ),
+                        ),
+                        new Text(
+                          wifi.intro,
+                          style: new TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold
+                          ),
+                        )
+                      ],
                     )
                   ],
-                )
-              ],
-            ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      )
+
+
     );
+
+
   }
 
   Widget buildButtonColumn(IconData icon, String label) {
