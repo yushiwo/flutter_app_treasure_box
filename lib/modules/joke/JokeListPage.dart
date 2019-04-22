@@ -2,27 +2,27 @@ import 'dart:io';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_app_treasure_box/modules/global/model/topnews_model.dart';
 
 /// 最新笑话，需要支持分页加载
 class JokeListPage extends StatefulWidget {
-
   @override
   State<StatefulWidget> createState() {
     return new JokeState();
   }
-
 }
 
-
-class JokeState extends State <JokeListPage> {
-
+class JokeState extends State<JokeListPage> {
   final String _url = 'http://v.juhe.cn/joke/content/text.php?';
   final String _key = '4fe744555babd36b877ca6f35e5950c0';
 
-  int currentPage = 1;
+  int currentPageIndex = 1;
+  bool isLoadingMore = false;
 
-  //HTTP请求的函数返回值为异步控件Future
+  List<dynamic> items = new List();
+
+  ScrollController _scrollController = new ScrollController();
+
+
   Future<String> get(int page) async {
     var httpClient = new HttpClient();
     var request = await httpClient.getUrl(Uri.parse('${_url}&page=${page}&key=$_key'));
@@ -30,132 +30,144 @@ class JokeState extends State <JokeListPage> {
     return await response.transform(utf8.decoder).join();
   }
 
-//  //HTTP请求的函数返回值为异步控件Future
-//  Future<PhoneAreaDto> _onQuery(String phoneNumber) async {
-//    setState(() {
-//      _loading = !_loading;
-//    });
-//
-//    Response response;
-//    Dio dio = new Dio();
-//    response = await dio.get(_url, queryParameters: {"phone": phoneNumber, "key": "f1d3261a5c2b1926ec9067f8a03f0932"});
-//    print(response.data.toString());
-//
-//    if(response.data['resultcode'] != "200") {
-//      Util.showToast(response.data['reason']);
-//      return null;
-//    } else {
-//      // 转化为model
-//      var phoneAreaDto = new PhoneAreaDto.fromJson(response.data);
-//      return phoneAreaDto;
-//    }
-//  }
 
-  Future<Null> loadData() async{
-    await get(currentPage);   //注意await关键字
-    if (!mounted) return; //异步处理，防止报错
-    setState(() {});//什么都不做，只为触发RefreshIndicator的子控件刷新
+  Future<Null> refreshData() async{
+    currentPageIndex = 1;
+    Future<String> requestStr = get(currentPageIndex);   //注意await关键字
+
+    requestStr?.then((String resultStr) {
+      List<dynamic> values = jsonDecode(resultStr)['result']!=null ? jsonDecode(resultStr)['result']['data']:[''];
+      setState(() {
+        items.clear();
+        print("values = " + values.toString());
+        print("values length = " + values.length.toString());
+        items.addAll(values);
+        return null;
+      });
+    });
+
+  }
+
+  Future<Null> _handleRefresh() async {
+    await Future.delayed(Duration(seconds: 2), () {
+      print('refresh');
+      setState(() {
+        items.clear();
+        items = List.generate(40, (i) => i);
+        return null;
+      });
+    });
+  }
+
+  Future _getMoreData() async {
+    if (!isLoadingMore) {
+      setState(() => isLoadingMore = true);
+      currentPageIndex = currentPageIndex + 1;
+      Future<String> requestStr = get(currentPageIndex);
+      requestStr?.then((String resultStr) {
+        List<dynamic> values = jsonDecode(resultStr)['result']!=null ? jsonDecode(resultStr)['result']['data']:[''];
+        setState(() {
+          print("values = " + values.toString());
+          print("values length = " + values.length.toString());
+          items.addAll(values);
+          isLoadingMore = false;
+          return null;
+        });
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    refreshData();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        print("loadMore");
+        _getMoreData();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
+    return Scaffold(
+      appBar: AppBar(
         centerTitle: true,
-        title: new Text("最新笑话"),
+        title: Text("最新笑话"),
       ),
       body: new RefreshIndicator(
-        child: new FutureBuilder(   //用于懒加载的FutureBuilder对象
-          future: get(currentPage),   //HTTP请求获取数据，将被AsyncSnapshot对象监视
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.none:        //get未执行时
-              case ConnectionState.waiting:     //get正在执行时
-                return new Center(
-                  child: new Card(
-                    child: new Padding(
-                      padding: new EdgeInsets.all(8.0),
-                      child: new SizedBox(
-                        width: 40.0,
-                        height: 40.0,
-                        child: new CircularProgressIndicator(  //在页面中央显示正在加载
-                          backgroundColor: Colors.blue,
-                        ),
-                      ),
-                    )
-                  ),
-                ) ;
-              default:
-                if (snapshot.hasError)    //get执行完成但出现异常
-                  return new Text('Error: ${snapshot.error}');
-                else  //get正常执行完成
-                  // 创建列表，列表数据来源于snapshot的返回值，而snapshot就是get(widget.newsType)执行完毕时的快照
-                  // get(widget.newsType)执行完毕时的快照即函数最后的返回值。
-                  return createListView(context, snapshot);
-            }
-          },
+        child: new Padding(
+          padding: EdgeInsets.all(12.0),
+          child: ListView.builder(
+            itemCount: items.length + 1,
+            itemBuilder: (context, index) {
+              if (index == items.length) {
+                return _buildProgressIndicator();
+              } else {
+                return _newsRow(context, items[index]["content"], items[index]["updatetime"]);
+              }
+            },
+            controller: _scrollController,
+          ),
         ),
-        onRefresh: loadData,
+        onRefresh: refreshData,
       ),
     );
-  }
-
-  Widget createListView(BuildContext context, AsyncSnapshot snapshot){
-    List values;
-    values = jsonDecode(snapshot.data)['result']!=null ? jsonDecode(snapshot.data)['result']['data']:[''];
-    switch (values.length) {
-      case 0:   //没有获取到数据，则返回请求失败的原因
-        return new Center(
-          child: new Card(
-            child: new Text(jsonDecode(snapshot.data)['reason']),
-          ),
-        );
-      default:
-        return  new ListView.builder(
-            physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.all(16.0),
-            itemCount: values == null ? 0 : values.length,
-            itemBuilder: (context, i) {
-              return _newsRow(context, values[i]["content"], values[i]["updatetime"]);
-            }
-        );
-    }
   }
 
   Widget _newsRow(BuildContext mContext, String content, String updateTime) {
     return new Card(
-      child: new Padding(
-        padding: new EdgeInsets.all(8.0),
-        child: new Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            // 笑话正文
-            new Text(
-              content,
-              style: new TextStyle(fontSize: 16.0),
-            ),
+        child: new Padding(
+          padding: new EdgeInsets.all(8.0),
+          child: new Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              // 笑话正文
+              new Text(
+                content,
+                style: new TextStyle(fontSize: 16.0),
+              ),
 
-            new Padding(padding: EdgeInsets.fromLTRB(0.0, 4.0, 0.0, 0.0)),
+              new Padding(padding: EdgeInsets.fromLTRB(0.0, 4.0, 0.0, 0.0)),
 
-            // 笑话更新时间
-            new Row(
-              children: <Widget>[
-                new Expanded(
-                  child: new Text(
-                    updateTime,
-                    style: new TextStyle(fontSize: 10.0, color: Colors.grey),
-                    textAlign: TextAlign.right,
-                  ),
-                )
-              ],
-            )
+              // 笑话更新时间
+              new Row(
+                children: <Widget>[
+                  new Expanded(
+                    child: new Text(
+                      updateTime,
+                      style: new TextStyle(fontSize: 10.0, color: Colors.grey),
+                      textAlign: TextAlign.right,
+                    ),
+                  )
+                ],
+              )
 
 
-          ],
-        ),
-      )
+            ],
+          ),
+        )
     );
   }
 
 
+  Widget _buildProgressIndicator() {
+    return new Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: new Center(
+        child: new Opacity(
+          opacity: isLoadingMore ? 1.0 : 0.0,
+          child: new CircularProgressIndicator(),
+        ),
+      ),
+    );
+  }
 }
