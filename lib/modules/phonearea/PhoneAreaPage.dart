@@ -66,19 +66,6 @@ class PhoneAreaState extends State<PhoneAreaPage> {
     );
   }
 
-//  Future<Null> _onQuery() async {
-//    setState(() {
-//      _loading = !_loading;
-//    });
-//    await Future.delayed(Duration(seconds: 3), () {
-//      setState(() {
-//        _loading = !_loading;
-//        phoneArea = new PhoneArea("浙江", "杭州", "0571", "310000", "移动");
-//        Util.showToast("加载完成");
-//      });
-//    });
-//  }
-
   //HTTP请求的函数返回值为异步控件Future
   Future<PhoneAreaDto> _onQuery(String phoneNumber) async {
     setState(() {
