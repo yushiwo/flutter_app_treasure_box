@@ -33,6 +33,7 @@ dependencies:
   fluttertoast: ^3.0.4
   flutter_staggered_grid_view: ^0.2.7
   dio: 2.1.2  #latest version
+  flutter_rating: ^0.0.2
 
 dev_dependencies:
   flutter_test:

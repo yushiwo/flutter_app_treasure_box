@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app_treasure_box/modules/global/model/star_model.dart';
 import 'package:flutter_app_treasure_box/modules/global/util/Util.dart';
 import 'package:flutter_app_treasure_box/modules/global/widget/ProgressDialog.dart';
+import 'package:flutter_rating/flutter_rating.dart';
 
 class StarDetailPage extends StatefulWidget {
   String consName;
@@ -25,6 +26,9 @@ class StarDetailState extends State<StarDetailPage> {
   String consName;
 
   bool _loading = false;    // 是否loading
+
+  double rating = 3.5;
+  int starCount = 5;
 
   final String _url = 'http://web.juhe.cn:8080/constellation/getAll?';
   final String _key = 'e9c93b5f97574e261f60bf19e446c6e0';
@@ -59,14 +63,38 @@ class StarDetailState extends State<StarDetailPage> {
     return new ProgressDialog (
         loading: _loading,
         msg: '正在加载...',
-        child: new Padding(
-          padding: new EdgeInsets.all(16.0),
-          child: new Column(
-            children: <Widget>[
-              this.mStarDetail == null ? new Text("123") : new Text(mStarDetail.datetime)
-            ],
+        child: this.mStarDetail == null ? _showErrorPage() : _showResultPage()
+    );
+  }
+
+  Widget _showErrorPage() {
+    return new Center(
+      child: Text("加载出错～"),
+    );
+  }
+
+  Widget _showResultPage() {
+    return new Container(
+      color: Colors.blue,
+      child: new Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Card(
+          child: new Center(
+            child: new StarRating(
+              size: 15.0,
+              rating: rating,
+              color: Colors.orange,
+              borderColor: Colors.grey,
+              starCount: starCount,
+              onRatingChanged: (rating) => setState(
+                    () {
+                  this.rating = rating;
+                },
+              ),
+            ),
           ),
-        )
+        ),
+      ),
     );
   }
 
