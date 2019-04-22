@@ -34,4 +34,15 @@ class Util {
         fontSize: 16.0
     );
   }
+
+  static double percentStringToDouble(String percentStr) {
+    if(percentStr == null || percentStr.trim() == null || percentStr.trim().isEmpty) {
+      return 0;
+    } else {
+      String trimPercentStr = percentStr.trim();
+      int length = trimPercentStr.length;
+      String doubleStr = trimPercentStr.substring(0, length-1);
+      return double.parse(doubleStr);
+    }
+  }
 }

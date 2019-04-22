@@ -80,8 +80,8 @@ class StarDetailState extends State<StarDetailPage> {
         padding: EdgeInsets.all(16.0),
         child: Card(
           child: new Center(
-//            child: _buildRatingItem("爱情指数", 3.5)
-            child: _buildInfoItem("幸运数字", 9.toString())
+            child: _buildRatingItem("爱情指数", 3.5)
+//            child: _buildInfoItem("幸运数字", 9.toString())
 
 //            new StarRating(
 //              size: 15.0,
