@@ -27,7 +27,7 @@ class StarDetailState extends State<StarDetailPage> {
 
   bool _loading = false;    // 是否loading
 
-  double rating = 3.5;
+  double rating = 3.2;
   int starCount = 5;
 
   final String _url = 'http://web.juhe.cn:8080/constellation/getAll?';
@@ -80,21 +80,53 @@ class StarDetailState extends State<StarDetailPage> {
         padding: EdgeInsets.all(16.0),
         child: Card(
           child: new Center(
-            child: new StarRating(
-              size: 15.0,
-              rating: rating,
-              color: Colors.orange,
-              borderColor: Colors.grey,
-              starCount: starCount,
-              onRatingChanged: (rating) => setState(
-                    () {
-                  this.rating = rating;
-                },
-              ),
-            ),
+//            child: _buildRatingItem("爱情指数", 3.5)
+            child: _buildInfoItem("幸运数字", 9.toString())
+
+//            new StarRating(
+//              size: 15.0,
+//              rating: rating,
+//              color: Colors.orange,
+//              borderColor: Colors.grey,
+//              starCount: starCount,
+//              onRatingChanged: (rating) => setState(
+//                    () {
+//                  this.rating = rating;
+//                },
+//              ),
+//            ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildRatingItem(String ratingName, double ratingNum) {
+    return new Row(
+      children: <Widget>[
+        new Text(ratingName),
+        new StarRating(
+          size: 15.0,
+          rating: ratingNum,
+          color: Colors.orange,
+          borderColor: Colors.grey,
+          starCount: starCount,
+          onRatingChanged: (rating) => setState(
+                () {
+              this.rating = rating;
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildInfoItem(String infoName, String infoMessage) {
+    return new Row(
+      children: <Widget>[
+        new Text(infoName),
+        new Text(infoMessage),
+      ],
     );
   }
 
