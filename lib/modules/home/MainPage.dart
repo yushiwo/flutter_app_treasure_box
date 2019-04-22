@@ -34,7 +34,7 @@ List<StaggeredTile> _staggeredTiles = const <StaggeredTile>[
 
 List<Widget> _tiles = const <Widget>[
   const _Example01Tile(Colors.green, Icons.highlight, "手电筒", flashRoute),
-  const _Example01Tile(Colors.lightBlue, Icons.wifi, "附近Wi-Fi", wifiRoute),
+  const _Example01Tile(Colors.lightBlue, Icons.stars, "星座运势", starRoute),
   const _Example01Tile(Colors.amber, Icons.phone_android, "手机号码归属地", phoneRoute),
   const _Example01Tile(Colors.brown, Icons.library_books, "新闻头条", topNewsRoute),
   const _Example01Tile(Colors.deepOrange, Icons.history, "历史上的今天", historyRoute),
