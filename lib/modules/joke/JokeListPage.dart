@@ -48,17 +48,6 @@ class JokeState extends State<JokeListPage> {
 
   }
 
-  Future<Null> _handleRefresh() async {
-    await Future.delayed(Duration(seconds: 2), () {
-      print('refresh');
-      setState(() {
-        items.clear();
-        items = List.generate(40, (i) => i);
-        return null;
-      });
-    });
-  }
-
   Future _getMoreData() async {
     if (!isLoadingMore) {
       setState(() => isLoadingMore = true);
