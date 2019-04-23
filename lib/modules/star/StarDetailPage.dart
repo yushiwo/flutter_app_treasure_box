@@ -27,7 +27,6 @@ class StarDetailState extends State<StarDetailPage> {
 
   bool _loading = false;    // 是否loading
 
-  double rating = 3.2;
   int starCount = 5;
 
   final String _url = 'http://web.juhe.cn:8080/constellation/getAll?';
@@ -79,43 +78,138 @@ class StarDetailState extends State<StarDetailPage> {
       child: new Padding(
         padding: EdgeInsets.all(16.0),
         child: Card(
-          child: new Center(
-            child: _buildRatingItem("爱情指数", 3.5)
-//            child: _buildInfoItem("幸运数字", 9.toString())
-
-//            new StarRating(
-//              size: 15.0,
-//              rating: rating,
-//              color: Colors.orange,
-//              borderColor: Colors.grey,
-//              starCount: starCount,
-//              onRatingChanged: (rating) => setState(
-//                    () {
-//                  this.rating = rating;
-//                },
-//              ),
-//            ),
-          ),
+          child: new Column(
+            children: <Widget>[
+              _buildSpace(24.0),
+              _buildTitleView(context),
+              _buildSpace(16.0),
+              _buildMiddleView(),
+              _buildSummaryView()
+            ],
+          )
         ),
       ),
     );
   }
 
+  // 头部
+  Widget _buildTitleView(BuildContext context) {
+    return new Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        new Padding(
+          padding: EdgeInsets.all(16.0),
+        ),
+        _buildStarView(context, Colors.blue, mStarDetail.name),
+        new Padding(
+          padding: EdgeInsets.all(16.0),
+        ),
+        _buildTitleContent(),
+        new Padding(
+          padding: EdgeInsets.all(16.0),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStarView(BuildContext context, Color color, String text) {
+    return new CircleAvatar(
+      backgroundColor: color,
+      radius: 50.0,
+      child: new Text(
+        text,
+        style: new TextStyle(color: Colors.white, fontSize: 24.0),
+      ),
+    );
+  }
+
+  Widget _buildTitleContent() {
+    return new Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        new Padding(
+          padding: EdgeInsets.all(16.0),
+        ),
+        new Text(
+          "今日运势(${Util.getMonthAndDay()})",
+          style: new TextStyle(fontSize: 12.0, color: Colors.grey),
+        ),
+        new StarRating(
+          size: 30.0,
+          rating: Util.getRating(mStarDetail.all, starCount),
+          color: Colors.orange,
+          borderColor: Colors.grey,
+          starCount: 5,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMiddleView() {
+
+    return new Column(
+
+      children: <Widget>[
+        new Row(
+          children: <Widget>[
+            new Expanded(
+              child: _buildRatingItem("爱情指数：", Util.getRating(mStarDetail.love, starCount)),
+            ),
+            new Expanded(
+              child: _buildRatingItem("健康指数：", Util.getRating(mStarDetail.health, starCount)),
+            ),
+          ],
+        ),
+
+        new Row(
+          children: <Widget>[
+            new Expanded(
+              child: _buildRatingItem("财运指数：", Util.getRating(mStarDetail.money, starCount)),
+            ),
+            new Expanded(
+              child: _buildRatingItem("工作指数：", Util.getRating(mStarDetail.work, starCount)),
+            ),
+          ],
+        ),
+
+        new Row(
+          children: <Widget>[
+            new Expanded(
+              child: _buildInfoItem("幸运颜色：", mStarDetail.color),
+            ),
+            new Expanded(
+              child: _buildInfoItem("幸运数字：", mStarDetail.number.toString()),
+            ),
+          ],
+        ),
+
+        new Row(
+          children: <Widget>[
+            new Expanded(
+              child: _buildInfoItem("速配星座：", mStarDetail.QFriend),
+            ),
+          ],
+        ),
+
+      ],
+    );
+
+  }
+
   Widget _buildRatingItem(String ratingName, double ratingNum) {
     return new Row(
       children: <Widget>[
-        new Text(ratingName),
+        _buildSpace(8.0),
+        new Text(
+          ratingName,
+          style: TextStyle(fontSize: 14.0, color: Colors.grey),
+        ),
         new StarRating(
           size: 15.0,
           rating: ratingNum,
           color: Colors.orange,
           borderColor: Colors.grey,
-          starCount: starCount,
-          onRatingChanged: (rating) => setState(
-                () {
-              this.rating = rating;
-            },
-          ),
+          starCount: 5,
         ),
       ],
     );
@@ -124,9 +218,40 @@ class StarDetailState extends State<StarDetailPage> {
   Widget _buildInfoItem(String infoName, String infoMessage) {
     return new Row(
       children: <Widget>[
-        new Text(infoName),
-        new Text(infoMessage),
+        _buildSpace(8.0),
+        new Text(
+          infoName,
+          style: TextStyle(fontSize: 14.0, color: Colors.grey),
+        ),
+        new Text(infoMessage, style: TextStyle(fontSize: 14.0),),
       ],
+    );
+  }
+
+  Widget _buildSummaryView() {
+    return new Padding(
+      padding: EdgeInsets.all(16.0),
+      child: new Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          new Text("今日概述", style: new TextStyle(fontSize: 16.0, color: Colors.blue, fontWeight: FontWeight.bold),),
+          _buildSpace(4.0),
+          new Text(
+              mStarDetail.summary,
+              style: new TextStyle(
+                  fontSize: 16.0,
+                  color: Colors.black54
+              )
+          )
+
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSpace(double space) {
+    return new Padding(
+      padding: EdgeInsets.all(space),
     );
   }
 

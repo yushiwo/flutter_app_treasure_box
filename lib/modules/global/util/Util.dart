@@ -45,4 +45,14 @@ class Util {
       return double.parse(doubleStr);
     }
   }
+
+  static double getRating(String percentStr, int starCount) {
+    return percentStringToDouble(percentStr) * starCount / 100;
+  }
+
+  static String getMonthAndDay() {
+    DateTime now = new DateTime.now();
+    return "${now.month}月${now.day}日";
+  }
+
 }
