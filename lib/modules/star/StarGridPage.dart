@@ -38,7 +38,7 @@ class StarState extends State<StarGridPage> {
     const _Example01Tile(Colors.blue, Icons.stars, "天蝎座"),
     const _Example01Tile(Colors.cyan, Icons.stars, "射手座"),
     const _Example01Tile(Colors.pinkAccent, Icons.stars, "摩羯座"),
-    const _Example01Tile(Colors.yellow, Icons.stars, "水平座"),
+    const _Example01Tile(Colors.yellow, Icons.stars, "水瓶座"),
     const _Example01Tile(Colors.purple, Icons.stars, "双鱼座"),
   ];
 
